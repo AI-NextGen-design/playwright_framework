@@ -34,12 +34,26 @@
       <version>7.12.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- Cucumber -->
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>7.33.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Cucumber + TestNG -->
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-testng</artifactId>
+      <version>7.33.0</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
   <build>
     <plugins>
-
       <!-- Java Compiler -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -49,14 +63,12 @@
           <release>21</release>
         </configuration>
       </plugin>
-
       <!-- TestNG execution through Maven -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.3.0</version>
       </plugin>
-
     </plugins>
   </build>
 
