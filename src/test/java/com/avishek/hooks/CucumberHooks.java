@@ -17,7 +17,7 @@ public class CucumberHooks {
     @Before
     public void setup(){
         PlayWrightManager.initialize();
-        BrowserManager.getBrowser();
+        BrowserManager.initialize();
         BrowserContextManager.initialize();
         testContext.initializePage();
 
