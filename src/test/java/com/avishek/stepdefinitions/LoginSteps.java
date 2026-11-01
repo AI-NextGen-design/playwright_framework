@@ -9,8 +9,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
 
-import java.util.Properties;
-
 public class LoginSteps {
     private final TestContext testContext;
     private final LoginPage loginPage;
