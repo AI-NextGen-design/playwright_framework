@@ -1,0 +1,42 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: JavaToolInstaller@0
+    displayName: Use Java 17
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: x64
+      jdkSourceOption: PreInstalled
+
+  - script: mvn -B -DskipTests package
+    displayName: Build Maven project
+
+  - script: >
+      mvn -B exec:java
+      -Dexec.mainClass=com.microsoft.playwright.CLI
+      -Dexec.args="install --with-deps chromium"
+    displayName: Install Playwright Chromium
+
+  - script: mvn -B clean verify
+    displayName: Run tests and generate Allure report
+
+  - task: PublishTestResults@2
+    displayName: Publish TestNG results
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: '**/target/surefire-reports/TEST-*.xml'
+      searchFolder: '$(Build.SourcesDirectory)'
+      failTaskOnFailedTests: false
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish Allure HTML report
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/target/allure-report'
+      artifact: 'allure-report'
+      publishLocation: pipeline
