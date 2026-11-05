@@ -40,3 +40,11 @@ steps:
       targetPath: '$(Build.SourcesDirectory)/target/allure-report'
       artifact: 'allure-report'
       publishLocation: pipeline
+
+  - task: PublishAllureReport@2
+    displayName: Publish Allure report
+    condition: succeededOrFailed()
+    inputs:
+      testResultsDir: '$(Build.SourcesDirectory)/allure-results'
+      reportName: 'Playwright Test Report'
+      allureVersion: '2.36.0'
