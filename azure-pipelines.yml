@@ -41,6 +41,12 @@ steps:
       artifact: 'allure-report'
       publishLocation: pipeline
 
+  - script: |
+      echo "Allure result files:"
+      find "$(Build.SourcesDirectory)" -type f -name "*-result.json" -print
+    displayName: Check Allure result files
+    condition: always()
+
   - task: PublishAllureReport@2
     displayName: Publish Allure report
     condition: succeededOrFailed()
