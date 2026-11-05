@@ -10,3 +10,10 @@ target/
 
 # Logs
 *.log
+
+# Allure generated files
+/allure-results/
+/allure-report/
+/target/allure-results/
+/target/allure-report/
+.allure/
