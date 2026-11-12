@@ -2,10 +2,8 @@ package com.avishek.stepdefinitions;
 
 import Context.TestContext;
 import com.avishek.pages.PimPage;
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import org.testng.ITestContext;
 
 public class PIMPageStep {
     TestContext testContext;
@@ -23,9 +21,7 @@ public class PIMPageStep {
 
     @And("Enter employee details and click on save button {string} {string} {string}")
     public void enterEmployeeDetailsAndClickOnSaveButton(String firstName, String middleName, String lastName) throws InterruptedException {
-        pimPage.firstName.fill(firstName);
-        pimPage.middleName.fill(middleName);
-        pimPage.lastName.fill(lastName);
+        pimPage.enderEmployeeDetailsAndClickOnSaveButton(firstName, middleName, lastName);
         pimPage.saveButton.click();
     }
 }
