@@ -27,6 +27,5 @@ public class PIMPageStep {
         pimPage.middleName.fill(middleName);
         pimPage.lastName.fill(lastName);
         pimPage.saveButton.click();
-        Thread.sleep(10000);
     }
 }

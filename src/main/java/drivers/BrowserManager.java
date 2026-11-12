@@ -4,11 +4,13 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 
+import java.util.List;
+
 public class BrowserManager {
     private static final ThreadLocal<Browser> browser = new ThreadLocal<>();
     public static void initialize(){
         Playwright playwright = PlayWrightManager.getPlaywright();
-        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(false);
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(false).setArgs(List.of("--start-maximized"));
         browser.set(playwright.chromium().launch(options));
     }
 
