@@ -1,5 +1,6 @@
 package drivers;
 
+import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Playwright;
 
@@ -10,8 +11,9 @@ public class BrowserContextManager {
 
     public static void initialize() {
 
+        Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(null);
         BrowserContext browserContext =
-                BrowserManager.getBrowser().newContext();
+                BrowserManager.getBrowser().newContext(options);
 
         context.set(browserContext);
     }

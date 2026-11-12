@@ -10,6 +10,8 @@ public class TestContext {
         page = BrowserContextManager
                 .getContext()
                 .newPage();
+        page.setDefaultTimeout(30000);
+        page.setDefaultNavigationTimeout(60000);
     }
 
     public Page getPage() {
