@@ -22,4 +22,10 @@ public class PimPage {
         return page.getByText(pimPageHeader,
                 new Page.GetByTextOptions().setExact(true));
     }
+
+    public void enderEmployeeDetailsAndClickOnSaveButton(String firstNameValue, String middleNameValue, String lastNameValue){
+       firstName.fill(firstNameValue);
+       middleName.fill(middleNameValue);
+       lastName.fill(lastNameValue);
+    }
 }
