@@ -14,9 +14,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
+
         <allure.version>2.29.1</allure.version>
+        <allure.results.directory>${project.basedir}/allure-results</allure.results.directory>
     </properties>
 
+    <!-- Allure dependency management -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -70,7 +73,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Allure reporting for Cucumber 7 -->
+        <!-- Allure Cucumber 7 adapter -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-cucumber7-jvm</artifactId>
@@ -92,25 +95,31 @@
                 </configuration>
             </plugin>
 
-            <!-- TestNG execution through Maven -->
+            <!-- TestNG / Cucumber execution -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
+                    <includes>
+                        <include>**/CucumberTestRunner.java</include>
+                    </includes>
+
                     <systemPropertyVariables>
                         <allure.results.directory>
-                            ${project.basedir}/allure-results
+                            ${allure.results.directory}
                         </allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
 
             <!-- Allure report generation -->
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>2.15.2</version>
+
                 <executions>
                     <execution>
                         <id>allure-report</id>
@@ -120,11 +129,13 @@
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
-                    <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>
+                    <resultsDirectory>${allure.results.directory}</resultsDirectory>
                     <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
