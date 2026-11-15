@@ -1,100 +1,117 @@
 # Playwright Java Automation Framework
 
-A scalable test automation framework built with Java, Playwright, Cucumber, TestNG, and Maven.
+An evolving, community-driven test automation framework built with Playwright and Java. The goal is to develop a practical, maintainable foundation for browser automation and demonstrate real-world automation engineering practices.
 
-The framework is designed to support frontend UI automation, backend API testing, and end-to-end integration testing.
+> **Project status:** In active development. Features and setup instructions may evolve as the framework grows.
 
-## Tech Stack
+## Technology stack
 
 - Java 17
-- Playwright Java
-- Cucumber BDD
-- TestNG
+- Playwright for Java
 - Maven
-- REST Assured (planned)
+- Cucumber (BDD)
+- TestNG
+- PicoContainer for scenario-scoped dependency injection
+- Allure reporting
+- Azure DevOps pipeline integration
 
-## Features
+## Current capabilities
 
-- Reusable Page Object Model (POM)
-- Environment-based configuration
-- Centralized browser and context management
+The framework is being developed to support:
+
+- Browser and browser-context management
+- Page and scenario context management
 - Cucumber-based test scenarios
-- UI and API automation support (API automation planned)
+- TestNG-based test execution
+- Parallel scenario execution (being implemented and validated)
+- Allure result generation
+- Failure screenshots and video evidence
+- CI execution through Azure DevOps
 
-## Project Structure
+Only consider a capability production-ready once it has been implemented and verified in the current repository.
+
+## Prerequisites
+
+- JDK 17
+- Maven 3.8+
+- Git
+- A supported operating system for Playwright browsers
+
+## Getting started
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/AI-NextGen-design/playwright_framework.git
+   cd playwright_framework
+   ```
+
+2. Confirm Java and Maven are available:
+
+   ```bash
+   java -version
+   mvn -version
+   ```
+
+3. Install the Playwright browser required by the tests. For Chromium:
+
+   ```bash
+   mvn exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install chromium"
+   ```
+
+   On Linux CI agents, install browser system dependencies as required by the Playwright environment. See the official Playwright Java documentation for platform-specific instructions.
+
+4. Run the test suite:
+
+   ```bash
+   mvn clean verify
+   ```
+
+## Reports and test evidence
+
+The project is configured to use Allure. After a successful Maven verification run, check the configured report output under:
 
 ```text
-src/
-├── main/
-│   ├── java/
-│   │   ├── config/
-│   │   ├── drivers/
-│   │   ├── Context/
-│   │   └── Constants/
-│   └── resources/
-│       └── config/
-└── test/
-    ├── java/
-    │   ├── pages/
-    │   ├── hooks/
-    │   ├── runners/
-    │   └── stepdefinitions/
-    └── resources/
-        └── features/
+target/allure-report/
 ```
 
-## Getting Started
+Raw Allure results are written to the configured results directory (currently `allure-results/`).
 
-### Prerequisites
+Failure screenshots and videos may be written under `target/`, depending on the hooks and test outcome. These generated files are not source code and should generally not be committed.
 
-- Java 17
-- Maven 3.x
+## Configuration
 
-### Clone the Repository
+Review `pom.xml` and the framework configuration classes before running tests. Environment-specific values, credentials, URLs and other secrets should be supplied through local configuration or CI secret variables; do not commit credentials or tokens.
+
+If the project uses a CI flag, for example:
 
 ```bash
-git clone <repository-url>
-cd playwright-java-framework
+mvn clean verify -Dci=true
 ```
 
-### Install Dependencies
+use it only where the framework's browser configuration expects it.
 
-```bash
-mvn clean install
-```
+## Contributing
 
-### Install Playwright Browsers
+Contributions, issue reports, suggestions and code reviews are welcome.
 
-```bash
-mvn exec:java \
-  -Dexec.mainClass=com.microsoft.playwright.CLI \
-  -Dexec.args="install"
-```
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request. By submitting a contribution, you retain copyright in your original contribution and agree that it is offered to the project under the MIT License, subject to the terms of that licence.
 
-### Run Tests
+## Code of conduct
 
-```bash
-mvn test
-```
+We aim to maintain a welcoming and respectful community. Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
-Run tests against a specific environment:
+## Copyright and licence
 
-```bash
-mvn test -Denv=qa
-```
+Copyright (c) 2026 Avishek Kumar Jha.
 
-## Current Progress
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for the complete licence text.
 
-- Framework setup and browser management
-- Environment configuration
-- OrangeHRM login page object
-- Cucumber login scenario (in progress)
+The copyright notice identifies the copyright holder of the original project material; it does not transfer ownership of contributors' original contributions.
 
-## Planned Enhancements
+## Useful references
 
-- REST Assured API automation
-- UI/API integration testing
-- Parallel execution
-- Allure reporting
-- Jenkins/GitLab CI/CD integration
-
+- [Playwright for Java documentation](https://playwright.dev/java/)
+- [Cucumber documentation](https://cucumber.io/docs/)
+- [TestNG documentation](https://testng.org/)
+- [Allure documentation](https://allurereport.org/docs/)
