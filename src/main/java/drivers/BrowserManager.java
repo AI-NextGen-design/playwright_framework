@@ -10,7 +10,10 @@ public class BrowserManager {
     private static final ThreadLocal<Browser> browser = new ThreadLocal<>();
     public static void initialize(){
         Playwright playwright = PlayWrightManager.getPlaywright();
-        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(false).setArgs(List.of("--start-maximized"));
+        boolean isCI = Boolean.parseBoolean(
+                System.getProperty("ci", "false")
+        );
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(isCI).setArgs(List.of("--start-maximized"));
         browser.set(playwright.chromium().launch(options));
     }
 

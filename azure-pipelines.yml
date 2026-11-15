@@ -26,8 +26,20 @@ steps:
     displayName: Install Playwright Chromium
 
   # Execute tests and generate Allure report
-  - script: mvn -B clean verify
+  - script: mvn -B clean verify -Dci=true
     displayName: Run tests and generate Allure report
+
+  - script: |
+      echo "Checking Surefire reports..."
+      find target/surefire-reports -type f -print || true
+      
+      echo "Checking Allure results..."
+      find . -type f -name "*-result.json" -print
+      
+      echo "Checking generated Allure HTML..."
+      ls -la target/allure-report || true
+      displayName: Diagnose Allure report generation
+      condition: always()  
 
   # Diagnose Allure results
   - script: |
