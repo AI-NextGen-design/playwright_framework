@@ -6,7 +6,9 @@ public class PlayWrightManager {
     public static final ThreadLocal<Playwright> playwright = new ThreadLocal<>();
 
     public static void initialize(){
-        playwright.set(Playwright.create());
+        if(playwright.get() == null) {
+            playwright.set(Playwright.create());
+        }
     }
 
     public static Playwright getPlaywright(){
@@ -14,8 +16,13 @@ public class PlayWrightManager {
     }
 
     public static void close(){
-        if(playwright.get() !=null){
-            playwright.get().close();
+        Playwright instance = playwright.get();
+        try{
+            if(instance !=null){
+                instance.close();
+            }
+        }
+        finally {
             playwright.remove();
         }
     }

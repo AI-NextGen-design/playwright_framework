@@ -10,6 +10,15 @@ public class BrowserContextManager {
             new ThreadLocal<>();
 
     public static void initialize() {
+        if (context.get() != null) {
+            return;
+        }
+        Browser browser = BrowserManager.getBrowser();
+        if (browser == null) {
+            throw new IllegalStateException(
+                    "Browser is not initialized"
+            );
+        }
         Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(1920, 1080)
                 .setRecordVideoDir(Paths.get("target/videos"))
                 .setRecordVideoSize(1280, 720);
@@ -23,8 +32,12 @@ public class BrowserContextManager {
     }
 
     public static void close() {
-        if (context.get() != null) {
-            context.get().close();
+        BrowserContext instance = context.get();
+        try {
+            if (instance != null) {
+                instance.close();
+            }
+        } finally {
             context.remove();
         }
     }
