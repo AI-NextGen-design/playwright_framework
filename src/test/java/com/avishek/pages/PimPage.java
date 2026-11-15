@@ -2,6 +2,7 @@ package com.avishek.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 
 public class PimPage {
     private final Page page;
@@ -19,8 +20,9 @@ public class PimPage {
     }
 
     public Locator clickOnPIMHeader(String pimPageHeader){
-        return page.getByText(pimPageHeader,
-                new Page.GetByTextOptions().setExact(true));
+        return page.getByRole(AriaRole.LINK,
+                new Page.GetByRoleOptions().setName("Add Employee")
+        );
     }
 
     public void enderEmployeeDetailsAndClickOnSaveButton(String firstNameValue, String middleNameValue, String lastNameValue){

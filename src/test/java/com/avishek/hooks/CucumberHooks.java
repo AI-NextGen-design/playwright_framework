@@ -1,3 +1,4 @@
+
 package com.avishek.hooks;
 
 import Context.TestContext;
@@ -9,17 +10,13 @@ import drivers.PlayWrightManager;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import io.qameta.allure.Allure;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.util.Collections.replaceAll;
-
 public class CucumberHooks {
+
     private final TestContext testContext;
 
     public CucumberHooks(TestContext testContext) {
@@ -27,44 +24,71 @@ public class CucumberHooks {
     }
 
     @Before
-    public void setup(){
+    public void setup() {
         PlayWrightManager.initialize();
         BrowserManager.initialize();
         BrowserContextManager.initialize();
         testContext.initializePage();
-
     }
 
     @After
-    public void tearDown(Scenario scenario){
+    public void tearDown(Scenario scenario) {
+
         Page page = testContext.getPage();
-        try{
-            if(scenario.isFailed() && page != null){
-                String scenarioName = scenario.getName().replaceAll("[^a-zA-Z0-9.-]", "_");
-                // Create screenshot directory
+        Video video = null;
+
+        try {
+
+            if (scenario.isFailed() && page != null) {
+
+                String scenarioName = scenario.getName()
+                        .replaceAll("[^a-zA-Z0-9.-]", "_");
+
+                // 1. Create screenshot directory
                 Path screenshotDir = Paths.get("target/screenshots");
                 Files.createDirectories(screenshotDir);
 
-                // Take ScreenShot
+                // 2. Capture screenshot
                 byte[] screenshot = page.screenshot(
                         new Page.ScreenshotOptions().setFullPage(true)
                 );
 
-                Path screenShotPath = screenshotDir.resolve(scenarioName+".png");
-                Files.write(screenShotPath, screenshot);
+                // 3. Save actual PNG file
+                Path screenshotPath =
+                        screenshotDir.resolve(scenarioName + ".png");
 
-                // Attach screenshot to cucumber report
-                scenario.attach(screenshot,
-                        "image.png",
-                        "Failure Screenshot");
+                Files.write(screenshotPath, screenshot);
 
-                // Get video reference before closing context
-                Video video = page.video();
+                // 4. Attach screenshot to Cucumber / Allure
+                scenario.attach(
+                        screenshot,
+                        "image/png",
+                        "Failure Screenshot"
+                );
 
-                // Close context to finalize video
+                // 5. Get video reference before context closes
+                video = page.video();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Failure evidence capture error:");
+            e.printStackTrace();
+
+        } finally {
+
+            // 6. Close context exactly once
+            try {
                 BrowserContextManager.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                if (video != null) {
+            // 7. Save video after context closes
+            if (scenario.isFailed() && video != null) {
+                try {
+
+                    String scenarioName = scenario.getName()
+                            .replaceAll("[^a-zA-Z0-9.-]", "_");
 
                     Path videoDir = Paths.get("target/failure-videos");
                     Files.createDirectories(videoDir);
@@ -81,19 +105,19 @@ public class CucumberHooks {
                             "video/webm",
                             "Failure Execution Video"
                     );
-                }
 
-            } else {
-                BrowserContextManager.close();
+                } catch (Exception e) {
+                    System.err.println("Video attachment error:");
+                    e.printStackTrace();
+                }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally{
-            BrowserContextManager.close();
-            BrowserManager.close();
-            PlayWrightManager.close();
+            // 8. Close browser and Playwright
+            try {
+                BrowserManager.close();
+            } finally {
+                PlayWrightManager.close();
+            }
         }
-
     }
 }

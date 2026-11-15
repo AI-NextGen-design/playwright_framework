@@ -30,22 +30,51 @@ steps:
   - script: mvn -B clean verify -Dci=true
     displayName: Run tests and generate Allure report
 
-  # 5. Diagnose generated files
+  # 5. Diagnose execution artifacts and detect available outputs
   - script: |
       echo "===== SUREFIRE REPORTS ====="
-      find target/surefire-reports -type f -print || true
+      find target/surefire-reports -type f -print 2>/dev/null || true
 
       echo "===== ALLURE RESULTS ====="
-      find allure-results -type f -print || true
+      find allure-results -type f -print 2>/dev/null || true
 
       echo "===== ALLURE HTML REPORT ====="
-      find target/allure-report -type f -print || true
+      find target/allure-report -type f -print 2>/dev/null || true
 
       echo "===== SCREENSHOTS ====="
-      find target/screenshots -type f -print || true
+      find target/screenshots -type f -print 2>/dev/null || true
 
       echo "===== VIDEOS ====="
-      find target/failure-videos -type f -print || true
+      find target/failure-videos -type f -print 2>/dev/null || true
+
+      # Detect real PNG screenshots
+      if find target/screenshots -type f -name '*.png' | grep -q .; then
+        echo "##vso[task.setvariable variable=hasScreenshots]true"
+      else
+        echo "##vso[task.setvariable variable=hasScreenshots]false"
+      fi
+
+      # Detect real WebM videos
+      if find target/failure-videos -type f -name '*.webm' | grep -q .; then
+        echo "##vso[task.setvariable variable=hasVideos]true"
+      else
+        echo "##vso[task.setvariable variable=hasVideos]false"
+      fi
+
+      # Detect Allure result JSON files
+      if find allure-results -type f -name '*-result.json' | grep -q .; then
+        echo "##vso[task.setvariable variable=hasAllureResults]true"
+      else
+        echo "##vso[task.setvariable variable=hasAllureResults]false"
+      fi
+
+      # Detect generated Allure HTML report
+      if [ -f target/allure-report/index.html ]; then
+        echo "##vso[task.setvariable variable=hasAllureHtml]true"
+      else
+        echo "##vso[task.setvariable variable=hasAllureHtml]false"
+      fi
+
     displayName: Diagnose execution artifacts
     condition: always()
 
@@ -59,44 +88,37 @@ steps:
       searchFolder: '$(Build.SourcesDirectory)'
       failTaskOnFailedTests: false
 
-  # 7. Prepare evidence directories
-  - script: |
-      mkdir -p target/screenshots
-      mkdir -p target/failure-videos
-    displayName: Prepare evidence directories
-    condition: always()
-
-  # 8. Publish failure screenshots
+  # 7. Publish failure screenshots
   - task: PublishPipelineArtifact@1
     displayName: Publish Failure Screenshots
-    condition: always()
+    condition: and(always(), eq(variables['hasScreenshots'], 'true'))
     inputs:
       targetPath: '$(Build.SourcesDirectory)/target/screenshots'
       artifact: 'failure-screenshots'
       publishLocation: pipeline
 
-  # 9. Publish failure videos
+  # 8. Publish failure videos
   - task: PublishPipelineArtifact@1
     displayName: Publish Failure Videos
-    condition: always()
+    condition: and(always(), eq(variables['hasVideos'], 'true'))
     inputs:
       targetPath: '$(Build.SourcesDirectory)/target/failure-videos'
       artifact: 'failure-videos'
       publishLocation: pipeline
 
-  # 10. Publish Allure HTML report as downloadable artifact
+  # 9. Publish Allure HTML report as downloadable artifact
   - task: PublishPipelineArtifact@1
     displayName: Publish Allure HTML report
-    condition: succeededOrFailed()
+    condition: and(always(), eq(variables['hasAllureHtml'], 'true'))
     inputs:
       targetPath: '$(Build.SourcesDirectory)/target/allure-report'
       artifact: 'allure-report'
       publishLocation: pipeline
 
-  # 11. Display Allure report inside Azure DevOps
+  # 10. Display Allure report inside Azure DevOps
   - task: PublishAllureReport@2
     displayName: Publish Allure report
-    condition: succeededOrFailed()
+    condition: and(always(), eq(variables['hasAllureResults'], 'true'))
     inputs:
       testResultsDir: '$(Build.SourcesDirectory)/allure-results'
       reportName: 'Playwright Test Report'
