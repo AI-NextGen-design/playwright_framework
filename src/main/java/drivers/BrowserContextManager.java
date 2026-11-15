@@ -10,7 +10,7 @@ public class BrowserContextManager {
             new ThreadLocal<>();
 
     public static void initialize() {
-        Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(null)
+        Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(1920, 1080)
                 .setRecordVideoDir(Paths.get("target/videos"))
                 .setRecordVideoSize(1280, 720);
         BrowserContext browserContext =
