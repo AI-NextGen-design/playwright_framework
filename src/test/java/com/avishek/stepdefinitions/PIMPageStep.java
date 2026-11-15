@@ -7,7 +7,7 @@ import io.cucumber.java.en.Then;
 
 public class PIMPageStep {
     TestContext testContext;
-    PimPage pimPage;
+   PimPage pimPage;
 
     public PIMPageStep(TestContext testContext){
         this.testContext = testContext;
