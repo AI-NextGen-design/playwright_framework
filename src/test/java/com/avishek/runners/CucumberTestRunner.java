@@ -6,8 +6,8 @@ import io.cucumber.testng.CucumberOptions;
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = {
-                "com/avishek/stepdefinitions",
-                "com/avishek/hooks"
+                "com.avishek.stepdefinitions",
+                "com.avishek.hooks"
         },
         plugin = {
                 "pretty",
