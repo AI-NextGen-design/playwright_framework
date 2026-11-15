@@ -43,6 +43,7 @@ public class CucumberHooks {
 
                 String scenarioName = scenario.getName()
                         .replaceAll("[^a-zA-Z0-9.-]", "_");
+                String uniqueId = java.util.UUID.randomUUID().toString();
 
                 // 1. Create screenshot directory
                 Path screenshotDir = Paths.get("target/screenshots");
@@ -55,7 +56,7 @@ public class CucumberHooks {
 
                 // 3. Save actual PNG file
                 Path screenshotPath =
-                        screenshotDir.resolve(scenarioName + ".png");
+                        screenshotDir.resolve(scenarioName + "_" + uniqueId +  ".png");
 
                 Files.write(screenshotPath, screenshot);
 
@@ -89,12 +90,13 @@ public class CucumberHooks {
 
                     String scenarioName = scenario.getName()
                             .replaceAll("[^a-zA-Z0-9.-]", "_");
+                    String uniqueId = java.util.UUID.randomUUID().toString();
 
                     Path videoDir = Paths.get("target/failure-videos");
                     Files.createDirectories(videoDir);
 
                     Path videoPath =
-                            videoDir.resolve(scenarioName + ".webm");
+                            videoDir.resolve(scenarioName +"_" + uniqueId +  ".webm");
 
                     video.saveAs(videoPath);
 
