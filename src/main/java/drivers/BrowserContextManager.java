@@ -2,7 +2,7 @@ package drivers;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Playwright;
+import java.nio.file.Paths;
 
 // This creates isolated sessions
 public class BrowserContextManager {
@@ -10,11 +10,11 @@ public class BrowserContextManager {
             new ThreadLocal<>();
 
     public static void initialize() {
-
-        Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(null);
+        Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(null)
+                .setRecordVideoDir(Paths.get("target/videos"))
+                .setRecordVideoSize(1280, 720);
         BrowserContext browserContext =
                 BrowserManager.getBrowser().newContext(options);
-
         context.set(browserContext);
     }
 
