@@ -1,7 +1,7 @@
 package com.avishek.stepdefinitions;
 
 import Context.TestContext;
-import com.avishek.config.ConfigManager;
+import config.ConfigManager;
 import com.avishek.pages.LandingPage;
 import com.avishek.pages.LoginPage;
 import io.cucumber.java.en.Given;

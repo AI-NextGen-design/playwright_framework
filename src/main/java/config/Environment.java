@@ -1,4 +1,4 @@
-package com.avishek.config;
+package config;
 
 public enum Environment {
     DEV,
